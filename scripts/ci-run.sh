@@ -397,7 +397,7 @@ ci_run () {
       tests="sanity"
 
       case "$GHDL_IMAGE_TAG" in
-          *ubuntu20*|*buster*|*bullseye*)
+          *ubuntu*|*buster*|*bullseye*)
 	      if [ "$USEDOCKER" = "true" ]; then
 		  GHDL_TEST_IMAGE="test:$GHDL_IMAGE_TAG-py"
 		  gstart "[CI] Docker build $GHDL_TEST_IMAGE" "$ANSI_BLUE"
@@ -412,14 +412,14 @@ EOF
 	      else
 		  pip3 install -r testsuite/requirements.txt
 	      fi
-          tests+=" pyunit"
-        ;;
-        *)
-          GHDL_TEST_IMAGE="ghdl/ghdl:$GHDL_IMAGE_TAG"
-        ;;
+              tests+=" pyunit"
+              ;;
+          *)
+              GHDL_TEST_IMAGE="ghdl/ghdl:$GHDL_IMAGE_TAG"
+              ;;
       esac
 
-      if [ "x$ISGPL" != "xtrue" ]; then
+      if [ -d testsuite/gna ]; then
         tests+=" gna"
       fi
 
@@ -436,7 +436,7 @@ EOF
 	  $RUN "$GHDL_TEST_IMAGE" bash -c "GHDL=ghdl ./testsuite/testsuite.sh $tests"
       else
 	  PATH="$PATH:$(pwd)/install-$(echo "$TASK" | cut -d+ -f2)/usr/local/bin" \
-	      ./testsuite/testsuite.sh
+	      ./testsuite/testsuite.sh $tests
       fi
   fi
 
