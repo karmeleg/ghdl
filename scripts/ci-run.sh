@@ -370,8 +370,8 @@ ci_run () {
               ghdl/build:"$BUILD_IMAGE_TAG" \
               bash -c "${scriptdir}/ci-run.sh $BUILD_CMD_OPTS build"
       else
-	  apt-get update -qq
-	  DEBIAN_FRONTEND=noninteractive apt-get -y install --no-install-recommends gnat zlib1g-dev
+	  sudo apt-get update -qq
+	  sudo apt-get -y install --no-install-recommends gnat zlib1g-dev
 	  bash -c "${scriptdir}/ci-run.sh $BUILD_CMD_OPTS build"
       fi
   fi
