@@ -1,0 +1,70 @@
+library ieee; 
+use ieee.std_logic_1164.all; 
+--use IEEE.numeric_std.all;
+ 
+entity CMC is  
+  port(
+    P,S,B : in STD_LOGIC;        
+    ms,mb: out STD_LOGIC   
+  	); 
+end entity CMC; 
+
+ 
+architecture behavioral of CMC is
+  type state_t is (parado, subiendo, bajando);
+  signal current_state: state_t := parado;
+  signal next_state: state_t := parado;
+
+   begin  
+
+    SYNC_PROC: process(P,S,B)
+      begin
+        current_state <= next_state;
+    end process;
+
+    NEXT_STATE_DECODE: process(P,S,B)
+       begin
+          next_state<= current_state;
+          case current_state is
+          
+            when parado =>
+              if(S = '1') then
+                 next_state <= subiendo; 
+              elsif (B = '1') then
+                 next_state <= bajando;                
+              end if;     
+
+            when subiendo =>
+              if(P='1') then
+                    next_state <= parado;                            
+              end if;
+              
+            when bajando =>
+              if(P='1') then
+                    next_state <= parado;                            
+              end if;
+              
+            when others =>
+          end case;
+       end process;  
+       
+       OUTPUT_DECODE : Process(P,S,B)
+       begin
+         case current_state is
+           when parado =>
+              mS <= '0';
+              mB <= '0';
+           when subiendo => 
+              mS <= '1';
+              mB <= '0';
+
+           when bajando =>
+              mS <= '0';
+              mB <= '1';
+
+           when others =>
+         end case; 
+       end process;  
+
+
+end architecture behavioral;
